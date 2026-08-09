@@ -289,4 +289,14 @@ footer.credits { text-align: center; color: var(--titlebar-text); text-shadow: 1
   .desktop-icons { flex-direction: row; flex-wrap: wrap; }
   .hero-windows > *:nth-child(2) { margin-left: 0; margin-top: 8px; max-width: none; }
   .mail-layout { grid-template-columns: 1fr; }
+
+  /* The taskbar's contents (Start + 4 sections + theme toggle + clock) don't
+     fit one row on narrow screens. Scroll the whole bar as a single strip
+     instead of nesting a cramped, undiscoverable scroll region inside it. */
+  .taskbar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .taskbar > * { flex: none; }
+  .task-buttons { overflow-x: visible; flex: none; }
 }
