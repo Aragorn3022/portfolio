@@ -263,6 +263,8 @@ main.sections > section { max-width: 980px; width: 100%; margin: 0 auto; }
 .task-buttons { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .task-buttons .btn98 { display: flex; align-items: center; gap: 5px; font-size: 11px; white-space: nowrap; text-decoration: none; flex: none; }
 .task-buttons svg.icon { width: 14px; height: 14px; }
+.scroll-btn { flex: none; padding: 5px 7px 4px; font-size: 11px; font-weight: 700; letter-spacing: -1px; }
+.scroll-btn:active { padding: 6px 6px 3px 8px; }
 .tray { display: flex; align-items: center; gap: 8px; padding: 2px 8px; font-size: 11px; flex: none; }
 .well.tray { box-shadow: inset -1px -1px var(--border-light), inset 1px 1px var(--border-darker); }
 .clock { font-variant-numeric: tabular-nums; min-width: 52px; text-align: center; }

@@ -28,6 +28,7 @@ export function Taskbar() {
   const [shutdownScreenOpen, setShutdownScreenOpen] = useState(false);
   const startMenuRef = useRef<HTMLDivElement>(null);
   const startBtnRef = useRef<HTMLButtonElement>(null);
+  const taskButtonsRef = useRef<HTMLElement>(null);
   const { navigateTo } = useWindowManager();
 
   useEffect(() => {
@@ -74,6 +75,13 @@ export function Taskbar() {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const effectiveDark = current ? current === "dark" : prefersDark;
     root.setAttribute("data-theme", effectiveDark ? "light" : "dark");
+  }
+
+  function scrollTaskButtons(direction: 1 | -1) {
+    const el = taskButtonsRef.current;
+    if (!el) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollBy({ left: 110 * direction, behavior: reduceMotion ? "auto" : "smooth" });
   }
 
   return (
@@ -145,7 +153,7 @@ export function Taskbar() {
 
         <div className="sep" />
 
-        <nav className="task-buttons" aria-label="Sections">
+        <nav className="task-buttons" aria-label="Sections" ref={taskButtonsRef}>
           {SECTIONS.map(({ id, label, icon }) => (
             <a
               key={id}
@@ -159,6 +167,23 @@ export function Taskbar() {
             </a>
           ))}
         </nav>
+
+        <button
+          type="button"
+          className="btn98 scroll-btn"
+          onClick={() => scrollTaskButtons(1)}
+          aria-label="Scroll sections right"
+        >
+          {">>"}
+        </button>
+        <button
+          type="button"
+          className="btn98 scroll-btn"
+          onClick={() => scrollTaskButtons(-1)}
+          aria-label="Scroll sections left"
+        >
+          {"<<"}
+        </button>
 
         <button
           type="button"
