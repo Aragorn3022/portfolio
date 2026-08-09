@@ -250,18 +250,23 @@ main.sections > section { max-width: 980px; width: 100%; margin: 0 auto; }
 .contact-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
 
 /* Taskbar */
-.taskbar { position: sticky; bottom: 0; z-index: 20; padding: 4px 6px; background: var(--face); box-shadow: inset 0 1px var(--border-light), 0 -1px var(--border-darker); }
-.taskbar-scroll { display: flex; align-items: center; gap: 6px; width: 100%; }
-.start-btn { display: flex; align-items: center; gap: 5px; font-weight: 700; }
+.taskbar { position: sticky; bottom: 0; z-index: 20; display: flex; align-items: center; gap: 6px; padding: 4px 6px; background: var(--face); box-shadow: inset 0 1px var(--border-light), 0 -1px var(--border-darker); }
+.start-btn { display: flex; align-items: center; gap: 5px; font-weight: 700; flex: none; }
 .start-btn svg.icon { width: 16px; height: 16px; }
-.taskbar .sep { width: 2px; align-self: stretch; box-shadow: inset -1px 0 var(--border-light), inset 1px 0 var(--border-dark); margin: 2px 2px; }
-.task-buttons { display: flex; gap: 4px; flex: 1; overflow-x: auto; }
-.task-buttons .btn98 { display: flex; align-items: center; gap: 5px; font-size: 11px; white-space: nowrap; text-decoration: none; }
+.taskbar .sep { width: 2px; align-self: stretch; box-shadow: inset -1px 0 var(--border-light), inset 1px 0 var(--border-dark); margin: 2px 2px; flex: none; }
+/* flex:1 + min-width:0 is what lets this shrink below its content's natural
+   width inside the flex row and scroll internally — without min-width:0 a
+   flex item won't shrink past its content size, so overflow-x:auto here
+   does nothing and the whole taskbar gets pushed wider instead. Start,
+   the theme toggle and the clock stay outside this element, so they're
+   always visible and never require scrolling to reach. */
+.task-buttons { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.task-buttons .btn98 { display: flex; align-items: center; gap: 5px; font-size: 11px; white-space: nowrap; text-decoration: none; flex: none; }
 .task-buttons svg.icon { width: 14px; height: 14px; }
-.tray { display: flex; align-items: center; gap: 8px; padding: 2px 8px; font-size: 11px; }
+.tray { display: flex; align-items: center; gap: 8px; padding: 2px 8px; font-size: 11px; flex: none; }
 .well.tray { box-shadow: inset -1px -1px var(--border-light), inset 1px 1px var(--border-darker); }
 .clock { font-variant-numeric: tabular-nums; min-width: 52px; text-align: center; }
-.theme-btn { border: none; background: none; cursor: pointer; display: flex; }
+.theme-btn { border: none; background: none; cursor: pointer; display: flex; flex: none; }
 .theme-btn svg.icon { width: 16px; height: 16px; }
 
 /* Start menu */
@@ -290,17 +295,4 @@ footer.credits { text-align: center; color: var(--titlebar-text); text-shadow: 1
   .desktop-icons { flex-direction: row; flex-wrap: wrap; }
   .hero-windows > *:nth-child(2) { margin-left: 0; margin-top: 8px; max-width: none; }
   .mail-layout { grid-template-columns: 1fr; }
-
-  /* The taskbar's contents (Start + 4 sections + theme toggle + clock) don't
-     fit one row on narrow screens. Scroll them as a single strip instead of
-     nesting a cramped, undiscoverable scroll region inside it. This scrolls
-     on an inner wrapper (.taskbar-scroll), not .taskbar itself, because
-     .taskbar is the positioned ancestor the Start menu popup is anchored
-     to — clipping overflow there would also clip/hide the popup. */
-  .taskbar-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .taskbar-scroll > * { flex: none; }
-  .task-buttons { overflow-x: visible; flex: none; }
 }
