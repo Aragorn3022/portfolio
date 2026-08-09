@@ -79,18 +79,52 @@ export function Taskbar() {
   return (
     <>
       <div className="taskbar" role="navigation" aria-label="Taskbar">
-        <button
-          type="button"
-          className="btn98 start-btn"
-          ref={startBtnRef}
-          aria-haspopup="true"
-          aria-expanded={startOpen}
-          onClick={() => setStartOpen((v) => !v)}
-        >
-          <Icon name="computer" />
-          Start
-        </button>
+        <div className="taskbar-scroll">
+          <button
+            type="button"
+            className="btn98 start-btn"
+            ref={startBtnRef}
+            aria-haspopup="true"
+            aria-expanded={startOpen}
+            onClick={() => setStartOpen((v) => !v)}
+          >
+            <Icon name="computer" />
+            Start
+          </button>
 
+          <div className="sep" />
+
+          <nav className="task-buttons" aria-label="Sections">
+            {SECTIONS.map(({ id, label, icon }) => (
+              <a
+                key={id}
+                className="btn98"
+                href={`#${id}`}
+                aria-pressed={activeSection === id}
+                onClick={(e) => { e.preventDefault(); navigateTo(id); }}
+              >
+                <Icon name={icon} />
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            className="theme-btn well"
+            onClick={toggleTheme}
+            title="Display Properties: toggle color scheme"
+            aria-label="Toggle light / dark scheme"
+          >
+            <Icon name="sun" />
+          </button>
+          <div className="tray well">
+            <span className="clock">{clock || "--:--"}</span>
+          </div>
+        </div>
+
+        {/* Kept outside .taskbar-scroll so the popup isn't clipped by the
+            scroll container's overflow on mobile. */}
         {startOpen && (
           <div className="start-menu raised" ref={startMenuRef}>
             <div className="start-menu-body">
@@ -139,36 +173,6 @@ export function Taskbar() {
             </div>
           </div>
         )}
-
-        <div className="sep" />
-
-        <nav className="task-buttons" aria-label="Sections">
-          {SECTIONS.map(({ id, label, icon }) => (
-            <a
-              key={id}
-              className="btn98"
-              href={`#${id}`}
-              aria-pressed={activeSection === id}
-              onClick={(e) => { e.preventDefault(); navigateTo(id); }}
-            >
-              <Icon name={icon} />
-              {label}
-            </a>
-          ))}
-        </nav>
-
-        <button
-          type="button"
-          className="theme-btn well"
-          onClick={toggleTheme}
-          title="Display Properties: toggle color scheme"
-          aria-label="Toggle light / dark scheme"
-        >
-          <Icon name="sun" />
-        </button>
-        <div className="tray well">
-          <span className="clock">{clock || "--:--"}</span>
-        </div>
       </div>
 
       {shutdownDialogOpen && (
