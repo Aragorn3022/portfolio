@@ -26,7 +26,8 @@ export function Taskbar() {
   const [shutdownDialogOpen, setShutdownDialogOpen] = useState(false);
   const [shutdownChoice, setShutdownChoice] = useState<"stay" | "screen">("stay");
   const [shutdownScreenOpen, setShutdownScreenOpen] = useState(false);
-  const [taskButtonsOverflow, setTaskButtonsOverflow] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const startMenuRef = useRef<HTMLDivElement>(null);
   const startBtnRef = useRef<HTMLButtonElement>(null);
   const taskButtonsRef = useRef<HTMLElement>(null);
@@ -34,12 +35,23 @@ export function Taskbar() {
 
   useEffect(() => {
     const el = taskButtonsRef.current;
-    if (!el || !("ResizeObserver" in window)) return;
-    const check = () => setTaskButtonsOverflow(el.scrollWidth > el.clientWidth + 1);
-    check();
-    const observer = new ResizeObserver(check);
-    observer.observe(el);
-    return () => observer.disconnect();
+    if (!el) return;
+    const update = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      setCanScrollLeft(el.scrollLeft > 1);
+      setCanScrollRight(el.scrollLeft < max - 1);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    let observer: ResizeObserver | undefined;
+    if ("ResizeObserver" in window) {
+      observer = new ResizeObserver(update);
+      observer.observe(el);
+    }
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer?.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -179,25 +191,25 @@ export function Taskbar() {
           ))}
         </nav>
 
-        {taskButtonsOverflow && (
-          <>
-            <button
-              type="button"
-              className="btn98 scroll-btn"
-              onClick={() => scrollTaskButtons(1)}
-              aria-label="Scroll sections right"
-            >
-              {">>"}
-            </button>
-            <button
-              type="button"
-              className="btn98 scroll-btn"
-              onClick={() => scrollTaskButtons(-1)}
-              aria-label="Scroll sections left"
-            >
-              {"<<"}
-            </button>
-          </>
+        {canScrollRight && (
+          <button
+            type="button"
+            className="btn98 scroll-btn"
+            onClick={() => scrollTaskButtons(1)}
+            aria-label="Scroll sections right"
+          >
+            {">>"}
+          </button>
+        )}
+        {canScrollLeft && (
+          <button
+            type="button"
+            className="btn98 scroll-btn"
+            onClick={() => scrollTaskButtons(-1)}
+            aria-label="Scroll sections left"
+          >
+            {"<<"}
+          </button>
         )}
 
         <button
