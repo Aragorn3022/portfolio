@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { useWindowManager } from "@/components/WindowManager";
 
 type WindowProps = {
-  id?: string;
+  id: string;
   title: string;
   eyebrow?: string;
   dot?: string;
@@ -23,12 +24,16 @@ export function Window({
   className,
   children,
 }: WindowProps) {
+  const { isClosed, closeWindow } = useWindowManager();
+  const closed = isClosed(id);
   const [closing, setClosing] = useState(false);
-  const [closed, setClosed] = useState(false);
 
   function handleClose() {
     setClosing(true);
-    window.setTimeout(() => setClosed(true), 130);
+    window.setTimeout(() => {
+      closeWindow(id);
+      setClosing(false);
+    }, 130);
   }
 
   return (

@@ -21,7 +21,7 @@ export function Hero() {
           </p>
         </Window>
 
-        <Window title="System Properties" inactive>
+        <Window id="sysprops" title="System Properties" inactive>
           <div className="sysprops">
             <Icon name="computer" />
             <dl>
