@@ -1,25 +1,33 @@
 name: Keep Render deployment alive
 
+# GitHub only reliably honors `schedule` triggers roughly hourly or coarser —
+# sub-15-minute cron schedules are frequently delayed or skipped outright
+# under load. So this triggers rarely (every 5h, a cadence GitHub actually
+# respects) and each run loops internally, pinging every ~7-10 minutes for
+# most of its lifetime, well under Render's 15-minute spin-down window.
 on:
   schedule:
-    - cron: "*/8 * * * *"
+    - cron: "0 */5 * * *"
   workflow_dispatch: {}
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 330
     steps:
-      - name: Wait a random delay
+      - name: Ping in a loop for ~5 hours
         run: |
-          delay=$((RANDOM % 180))
-          echo "Sleeping ${delay}s before pinging"
-          sleep "$delay"
-
-      - name: Ping the live site
-        run: |
-          status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://portfolio-lem8.onrender.com")
-          echo "Response status: $status"
-          if [ "$status" -ge 500 ]; then
-            echo "Site returned a server error ($status)"
-            exit 1
-          fi
+          end=$(( $(date +%s) + 310 * 60 ))
+          while [ "$(date +%s)" -lt "$end" ]; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://portfolio-lem8.onrender.com")
+            echo "$(date -u +%FT%TZ) status=$status"
+            if [ "$status" -ge 500 ]; then
+              echo "Site returned a server error ($status)"
+            fi
+            delay=$(( 420 + RANDOM % 180 ))
+            sleep "$delay"
+          done
