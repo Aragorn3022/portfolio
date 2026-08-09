@@ -78,6 +78,16 @@ body {
   font-size: 12px;
   -webkit-font-smoothing: none;
   min-height: 100vh;
+  /* Closing every window can collapse the page's content well below the
+     viewport height, and `position: sticky` on the taskbar has nothing to
+     stick to in that case — it just sits wherever the collapsed content
+     ends instead of the bottom of the screen. Making body a flex column and
+     letting main.sections absorb the remaining space keeps the taskbar
+     pinned at the true bottom either way: pushed there when content is
+     short, and still sticky during scroll when content is tall enough to
+     need it. */
+  display: flex;
+  flex-direction: column;
 }
 a { color: var(--link); }
 a:focus-visible, button:focus-visible, .icon-btn:focus-visible { outline: 2px dotted var(--text); outline-offset: 2px; }
@@ -201,7 +211,7 @@ svg.icon { shape-rendering: crispEdges; display: block; }
 .section-lede { color: var(--titlebar-text); text-shadow: 1px 1px 0 rgba(0,0,0,.4); max-width: 980px; margin: 0 auto; padding: 0 2px 8px; }
 
 /* ---------- Layout scaffolding ---------- */
-main.sections { display: flex; flex-direction: column; gap: 40px; padding: 0 24px 40px; }
+main.sections { display: flex; flex-direction: column; gap: 40px; padding: 0 24px 40px; flex: 1; }
 main.sections > section { max-width: 980px; width: 100%; margin: 0 auto; }
 
 /* Hero / desktop */
