@@ -211,6 +211,11 @@ main.sections > section { max-width: 980px; width: 100%; margin: 0 auto; }
 .dicon svg.icon { width: 34px; height: 34px; }
 .dicon span { color: #fff; text-align: center; font-size: 11px; text-shadow: 1px 1px 1px #000; padding: 1px 4px; }
 .dicon:hover span, .dicon:focus-visible span { background: var(--accent); color: var(--titlebar-text); outline: 1px dotted var(--titlebar-text); }
+.dicon.dicon-dragging { z-index: 40; position: relative; }
+@media (min-width: 721px) {
+  .dicon { cursor: grab; touch-action: none; }
+  .dicon.dicon-dragging { cursor: grabbing; }
+}
 .hero-windows { display: flex; flex-direction: column; gap: 4px; }
 .hero-windows > *:nth-child(2) { margin-left: 48px; margin-top: -14px; max-width: 300px; align-self: flex-start; }
 #about .win-body { font-family: "Courier New", Consolas, monospace; font-size: 13px; line-height: 1.7; }
