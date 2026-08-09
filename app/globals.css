@@ -154,7 +154,11 @@ svg.icon { shape-rendering: crispEdges; display: block; }
 @media (prefers-reduced-motion: no-preference) {
   .win { transition: opacity .12s ease, transform .12s ease; }
 }
-.win.win-closing { opacity: 0; transform: scale(.96); pointer-events: none; }
+/* The scale-down on close is applied via the same inline `transform` style
+   as dragging (see Window.tsx) rather than here, so the two don't fight
+   over the property — an inline style always wins over this rule anyway. */
+.win.win-closing { opacity: 0; pointer-events: none; }
+.win.win-dragging { position: relative; z-index: 50; transition: none; }
 .titlebar {
   display: flex;
   align-items: center;
@@ -163,6 +167,10 @@ svg.icon { shape-rendering: crispEdges; display: block; }
   padding: 3px 3px 3px 6px;
   background: linear-gradient(90deg, var(--titlebar-a), var(--titlebar-b));
   color: var(--titlebar-text);
+}
+@media (min-width: 721px) {
+  .titlebar { cursor: grab; touch-action: none; }
+  .win.win-dragging .titlebar { cursor: grabbing; }
 }
 .titlebar.titlebar-inactive {
   background: linear-gradient(90deg, var(--titlebar-inactive-a), var(--titlebar-inactive-b));
