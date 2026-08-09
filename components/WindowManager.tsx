@@ -6,6 +6,7 @@ type WindowManagerContextValue = {
   isClosed: (id: string) => boolean;
   closeWindow: (id: string) => void;
   openWindow: (id: string) => void;
+  navigateTo: (id: string) => void;
 };
 
 const WindowManagerContext = createContext<WindowManagerContextValue | null>(null);
@@ -28,8 +29,27 @@ export function WindowManagerProvider({ children }: { children: ReactNode }) {
 
   const isClosed = useCallback((id: string) => closedIds.has(id), [closedIds]);
 
+  const navigateTo = useCallback(
+    (id: string) => {
+      openWindow(id);
+      // Wait for the reopen to actually commit and paint (the window may have
+      // been display:none) before measuring its position — otherwise the
+      // scroll target is computed against stale (or absent) layout, which is
+      // the usual cause of "jumps to the wrong place" on mobile.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        });
+      });
+    },
+    [openWindow]
+  );
+
   return (
-    <WindowManagerContext.Provider value={{ isClosed, closeWindow, openWindow }}>
+    <WindowManagerContext.Provider value={{ isClosed, closeWindow, openWindow, navigateTo }}>
       {children}
     </WindowManagerContext.Provider>
   );

@@ -28,7 +28,7 @@ export function Taskbar() {
   const [shutdownScreenOpen, setShutdownScreenOpen] = useState(false);
   const startMenuRef = useRef<HTMLDivElement>(null);
   const startBtnRef = useRef<HTMLButtonElement>(null);
-  const { openWindow } = useWindowManager();
+  const { navigateTo } = useWindowManager();
 
   useEffect(() => {
     setClock(formatTime(new Date()));
@@ -98,19 +98,31 @@ export function Taskbar() {
                 <span>ASWAD98</span>
               </div>
               <div className="start-list">
-                <a href="#about" onClick={() => { openWindow("about"); setStartOpen(false); }}>
+                <a
+                  href="#about"
+                  onClick={(e) => { e.preventDefault(); navigateTo("about"); setStartOpen(false); }}
+                >
                   ▸ About
                 </a>
-                <a href="#skills" onClick={() => { openWindow("skills"); setStartOpen(false); }}>
+                <a
+                  href="#skills"
+                  onClick={(e) => { e.preventDefault(); navigateTo("skills"); setStartOpen(false); }}
+                >
                   ▸ Control Panel (Skills)
                 </a>
-                <a href="#projects" onClick={() => { openWindow("projects"); setStartOpen(false); }}>
+                <a
+                  href="#projects"
+                  onClick={(e) => { e.preventDefault(); navigateTo("projects"); setStartOpen(false); }}
+                >
                   ▸ My Projects
                 </a>
                 <a href="/resume.pdf" download onClick={() => setStartOpen(false)}>
                   ▸ Resume.pdf
                 </a>
-                <a href="#contact" onClick={() => { openWindow("contact"); setStartOpen(false); }}>
+                <a
+                  href="#contact"
+                  onClick={(e) => { e.preventDefault(); navigateTo("contact"); setStartOpen(false); }}
+                >
                   ▸ Contact
                 </a>
                 <hr />
@@ -137,7 +149,7 @@ export function Taskbar() {
               className="btn98"
               href={`#${id}`}
               aria-pressed={activeSection === id}
-              onClick={() => openWindow(id)}
+              onClick={(e) => { e.preventDefault(); navigateTo(id); }}
             >
               <Icon name={icon} />
               {label}
