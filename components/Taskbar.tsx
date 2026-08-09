@@ -26,10 +26,21 @@ export function Taskbar() {
   const [shutdownDialogOpen, setShutdownDialogOpen] = useState(false);
   const [shutdownChoice, setShutdownChoice] = useState<"stay" | "screen">("stay");
   const [shutdownScreenOpen, setShutdownScreenOpen] = useState(false);
+  const [taskButtonsOverflow, setTaskButtonsOverflow] = useState(false);
   const startMenuRef = useRef<HTMLDivElement>(null);
   const startBtnRef = useRef<HTMLButtonElement>(null);
   const taskButtonsRef = useRef<HTMLElement>(null);
   const { navigateTo } = useWindowManager();
+
+  useEffect(() => {
+    const el = taskButtonsRef.current;
+    if (!el || !("ResizeObserver" in window)) return;
+    const check = () => setTaskButtonsOverflow(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setClock(formatTime(new Date()));
@@ -168,22 +179,26 @@ export function Taskbar() {
           ))}
         </nav>
 
-        <button
-          type="button"
-          className="btn98 scroll-btn"
-          onClick={() => scrollTaskButtons(1)}
-          aria-label="Scroll sections right"
-        >
-          {">>"}
-        </button>
-        <button
-          type="button"
-          className="btn98 scroll-btn"
-          onClick={() => scrollTaskButtons(-1)}
-          aria-label="Scroll sections left"
-        >
-          {"<<"}
-        </button>
+        {taskButtonsOverflow && (
+          <>
+            <button
+              type="button"
+              className="btn98 scroll-btn"
+              onClick={() => scrollTaskButtons(1)}
+              aria-label="Scroll sections right"
+            >
+              {">>"}
+            </button>
+            <button
+              type="button"
+              className="btn98 scroll-btn"
+              onClick={() => scrollTaskButtons(-1)}
+              aria-label="Scroll sections left"
+            >
+              {"<<"}
+            </button>
+          </>
+        )}
 
         <button
           type="button"
