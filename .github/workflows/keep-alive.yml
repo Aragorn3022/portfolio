@@ -23,7 +23,9 @@ jobs:
         run: |
           end=$(( $(date +%s) + 310 * 60 ))
           while [ "$(date +%s)" -lt "$end" ]; do
-            status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://portfolio-lem8.onrender.com")
+            if ! status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://portfolio-lem8.onrender.com"); then
+              status="000"
+            fi
             echo "$(date -u +%FT%TZ) status=$status"
             if [ "$status" -ge 500 ]; then
               echo "Site returned a server error ($status)"
